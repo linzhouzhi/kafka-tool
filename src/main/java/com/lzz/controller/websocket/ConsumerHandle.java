@@ -4,6 +4,7 @@ package com.lzz.controller.websocket;
  * Created by lzz on 2018/1/16.
  */
 
+import com.lzz.kafka.Consumer;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,19 +39,10 @@ public class ConsumerHandle implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         JSONObject reqObject = JSONObject.fromObject( message.getPayload().toString() );
         session.sendMessage(new TextMessage(new Date() + "" + reqObject.toString()));
-        long runTime = reqObject.getLong("runtime");
-        if( runTime > 30 ){
-            runTime = 30;
-        }
-        runTime = runTime * 60 * 1000;
-        long startTime = System.currentTimeMillis();
-        while (true){
-            Thread.sleep(500);
-            session.sendMessage(new TextMessage(new Date() + ""));
-            if( System.currentTimeMillis() - startTime >=  runTime){
-                break;
-            }
-        }
+        String topic = reqObject.getString("topic");
+        int runTime = reqObject.getInt("runtime");
+        Consumer consumer = new Consumer(topic);
+        consumer.consumer(session, runTime);
     }
 
     @Override

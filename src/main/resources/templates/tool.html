@@ -24,6 +24,10 @@
         .container-title-content{
             margin-top: -5px;
         }
+
+        .pointer{
+            cursor:pointer
+        }
     </style>
 </head>
 <body>
@@ -46,7 +50,10 @@
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading">kafka topic</div>
+                <div class="panel-heading">
+                    kafka topic
+                    <span class="glyphicon glyphicon-menu-hamburger pull-right pointer" id="topic-list"></span>
+                </div>
                 <div class="panel-body">
                     <div class="form-group">
                         <label>zk address</label>
@@ -74,8 +81,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">kafka producer</div>
                 <div class="panel-body">
-                    <textarea class="form-control" rows="10"></textarea><br/>
-                    <button type="button" class="form-control btn btn-default">append message</button>
+                    <textarea name="producer-msg" class="form-control" rows="10" id="producer-text"></textarea><br/>
                 </div>
             </div><!-- .panel -->
         </div>
@@ -95,13 +101,31 @@
                     </div>
 
                 </div>
-                <div class="panel-body" id="console" style="background-color:#333; color: #ffffff;height: 635px;margin-left:-1px;margin-right:-1px;">
+                <div class="panel-body" id="console" style="overflow-y:auto;background-color:#333; color: #ffffff;height: 600px;margin-left:-1px;margin-right:-1px;">
                     <h1 style="font-size: 36px;">kafka consumer</h1>
                 </div>
             </div><!-- .panel -->
         </div>
     </div><!-- .row -->
 </div><!-- .container-fluid -->
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="topic-list-model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                list1
+                list1
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script src="../jquery/jquery-2.2.3.min.js"></script>

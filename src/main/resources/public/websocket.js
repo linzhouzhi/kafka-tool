@@ -17,7 +17,7 @@ function connect(data) {
     };
 
     ws.onmessage = function (event) {
-        echo_msg('Received: ' + event.data);
+        echo_msg(event.data);
     };
 
     ws.onclose = function (event) {

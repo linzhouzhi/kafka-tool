@@ -1,5 +1,7 @@
 package com.lzz.controller;
 
+import com.lzz.kafka.Producer;
+import com.lzz.kafka.Topic;
 import com.lzz.logic.ToolService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -37,7 +39,19 @@ public class ToolController {
     @RequestMapping( value = "/create-topic", method = RequestMethod.POST)
     @ResponseBody
     public String createTopic(@RequestBody JSONObject requestBody) {
-        toolService.createTopic(requestBody);
+        System.out.println( requestBody );
+        Topic.createTopic(requestBody.getString("topic"));
+        return "success";
+    }
+
+    @RequestMapping( value = "/producer-msg", method = RequestMethod.POST)
+    @ResponseBody
+    public String producerMsg(@RequestBody JSONObject requestBody) {
+        String topic = requestBody.getString("topic");
+        String msg = requestBody.getString("msg");
+
+        Producer producer = new Producer(topic);
+        producer.send( msg );
         return "success";
     }
 
