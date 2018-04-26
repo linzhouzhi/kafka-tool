@@ -1,4 +1,4 @@
-package com.lzz.kafka;
+package com.lzz.kafka.test;
 
 /**
  * Created by lzz on 2018/1/18.

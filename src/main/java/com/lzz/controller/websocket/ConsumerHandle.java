@@ -4,7 +4,7 @@ package com.lzz.controller.websocket;
  * Created by lzz on 2018/1/16.
  */
 
-import com.lzz.kafka.Consumer;
+import com.lzz.kafka.test.Consumer;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

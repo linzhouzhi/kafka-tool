@@ -1,4 +1,4 @@
-package com.lzz.kafka;
+package com.lzz.kafka.test;
 
 import java.util.ArrayList;
 import java.util.HashMap;

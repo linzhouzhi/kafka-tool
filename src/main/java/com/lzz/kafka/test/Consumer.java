@@ -1,4 +1,4 @@
-package com.lzz.kafka;
+package com.lzz.kafka.test;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;

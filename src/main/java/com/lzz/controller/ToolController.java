@@ -1,7 +1,7 @@
 package com.lzz.controller;
 
-import com.lzz.kafka.Producer;
-import com.lzz.kafka.Topic;
+import com.lzz.kafka.test.Producer;
+import com.lzz.kafka.test.Topic;
 import com.lzz.logic.ToolService;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
