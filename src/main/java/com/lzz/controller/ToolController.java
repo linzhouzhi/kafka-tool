@@ -1,14 +1,19 @@
 package com.lzz.controller;
 
-import com.lzz.kafka.test.Producer;
-import com.lzz.kafka.test.Topic;
 import com.lzz.logic.ToolService;
+import com.lzz.model.Broker;
+import com.lzz.model.Consumer;
+import com.lzz.model.ConsumerMonitor;
+import com.lzz.model.Response;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lzz on 2018/1/14.
@@ -18,40 +23,97 @@ public class ToolController {
     @Resource
     ToolService toolService;
 
-    @RequestMapping("/tool")
-    public String tool(Model model) {
-        return "tool";
+    @RequestMapping("/client")
+    public String client(Model model) {
+        return "client";
     }
 
-    @RequestMapping( value = "/start-consumer", method = RequestMethod.POST)
-    @ResponseBody
-    public String startConsumer(@RequestBody JSONObject requestBody) {
-        toolService.startConsumer(requestBody);
-        return "hello " + requestBody;
+    @RequestMapping("/monitor")
+    public String monitor(Model model) {
+        return "monitor";
     }
 
-    @RequestMapping( value = "/stop-consumer", method = RequestMethod.POST)
-    @ResponseBody
-    public String stopConsumer(@RequestBody JSONObject requestBody) {
-        return "hello " + requestBody;
+    @RequestMapping("/consumer")
+    public String consumer(Model model) {
+        return "consumer";
     }
+
+    @RequestMapping( value = "/topic-list", method = RequestMethod.GET)
+    @ResponseBody
+    public Response topicList(@RequestParam String zk) {
+        if(StringUtils.isBlank( zk )){
+            return Response.fail();
+        }
+        List<com.lzz.model.Topic> list =  toolService.getTopicList(zk);
+        return Response.res( list );
+    }
+
+    @RequestMapping( value = "/broker-list", method = RequestMethod.GET)
+    @ResponseBody
+    public Response getBrokerList(@RequestParam String zk) {
+        List<Broker> list = new ArrayList<>();
+        try {
+            list =  toolService.getBrokerList(zk);
+        }catch (Exception e){
+            Response.fail();
+        }
+        return Response.res( list );
+    }
+
+    @RequestMapping( value = "/consumer-list", method = RequestMethod.GET )
+    @ResponseBody
+    public Response getConsumerList(){
+        List<ConsumerMonitor> consumerMonitorList = toolService.getConsumerMonitorList();
+        return Response.res( consumerMonitorList );
+    }
+
+    @RequestMapping( value = "/consumer-groups", method = RequestMethod.GET)
+    @ResponseBody
+    public Response consumerGroups(@RequestParam String zk) {
+        List<Consumer> list = new ArrayList<>();
+        try {
+            list =  toolService.getConsumerGroups(zk);
+        }catch (Exception e){
+            return Response.fail();
+        }
+        return Response.res( list );
+    }
+
+    @RequestMapping( value = "/consumer-detail", method = RequestMethod.POST)
+    @ResponseBody
+    public Response consumerDetail(@RequestBody JSONObject requestBody) {
+        int partitions = requestBody.getInt("partitions");
+        String consumer = requestBody.getString("consumer");
+        String topic = requestBody.getString("topic");
+        String zk = requestBody.getString("zk");
+        String broker = requestBody.getString("broker");
+        List<Map<String,String>> res = toolService.getConsumerDetail(zk, broker, topic, consumer, partitions);
+        return Response.res( res );
+    }
+
 
     @RequestMapping( value = "/create-topic", method = RequestMethod.POST)
     @ResponseBody
     public String createTopic(@RequestBody JSONObject requestBody) {
-        System.out.println( requestBody );
-        Topic.createTopic(requestBody.getString("topic"));
+        toolService.createTopic(requestBody);
         return "success";
     }
+
+    @RequestMapping( value = "/delete-topic", method = RequestMethod.GET)
+    @ResponseBody
+    public String deleteTopic(@RequestParam String zk, @RequestParam String topic) {
+        toolService.deleteTopic(zk, topic);
+        return "success";
+    }
+
 
     @RequestMapping( value = "/producer-msg", method = RequestMethod.POST)
     @ResponseBody
     public String producerMsg(@RequestBody JSONObject requestBody) {
         String topic = requestBody.getString("topic");
         String msg = requestBody.getString("msg");
-
-        Producer producer = new Producer(topic);
-        producer.send( msg );
+        String brokers = requestBody.getString("brokers");
+        toolService.appendMsg(brokers, topic, msg);
         return "success";
     }
 

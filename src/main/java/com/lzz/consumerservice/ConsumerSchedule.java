@@ -14,8 +14,8 @@ public class ConsumerSchedule {
     public static ExecutorService executorService = Executors.newFixedThreadPool(100);
     public static List<ConsumerTemplet> consumerServiceList = new ArrayList<>();
     static {
-        consumerServiceList.add( new ConsumerTemplet("ssspark01:2181", "hhqh2", "test00001", new TestConsumer(), 3) );
-        consumerServiceList.add( new ConsumerTemplet("ssspark01:2181", "hhqh", "test00001", new TestConsumer(), 4) );
+        consumerServiceList.add( new ConsumerTemplet("*:2181", "hhqh2", "test00001", new TestConsumer(), 3) );
+        consumerServiceList.add( new ConsumerTemplet("*01:2181", "hhqh", "test00001", new TestConsumer(), 4) );
     }
 
     public static boolean startAllConsumer(){

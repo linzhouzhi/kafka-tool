@@ -1,4 +1,4 @@
-window.STATIC_URL="http://localhost:8080/";
+window.STATIC_URL="/";
 var ws = null;
 var url = window.STATIC_URL+"webSocketServer/sockjs";
 var transports = [];
@@ -9,7 +9,7 @@ function connect(data) {
         return;
     }
 
-    ws = new SockJS(window.STATIC_URL+"webSocketServer/sockjs");
+    ws = new SockJS( url );
 
     ws.onopen = function () {
         echo(data);
@@ -22,7 +22,6 @@ function connect(data) {
 
     ws.onclose = function (event) {
         echo_msg('Info: connection closed.');
-        echo_msg(event);
     };
 }
 
