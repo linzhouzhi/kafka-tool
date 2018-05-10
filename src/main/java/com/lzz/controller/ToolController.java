@@ -82,39 +82,56 @@ public class ToolController {
     @RequestMapping( value = "/consumer-detail", method = RequestMethod.POST)
     @ResponseBody
     public Response consumerDetail(@RequestBody JSONObject requestBody) {
-        int partitions = requestBody.getInt("partitions");
-        String consumer = requestBody.getString("consumer");
-        String topic = requestBody.getString("topic");
-        String zk = requestBody.getString("zk");
-        String broker = requestBody.getString("broker");
-        List<Map<String,String>> res = toolService.getConsumerDetail(zk, broker, topic, consumer, partitions);
-        return Response.res( res );
+        List<Map<String,String>> consumerList;
+        try {
+            int partitions = requestBody.getInt("partitions");
+            String consumer = requestBody.getString("consumer");
+            String topic = requestBody.getString("topic");
+            String zk = requestBody.getString("zk");
+            String broker = requestBody.getString("broker");
+            consumerList = toolService.getConsumerDetail(zk, broker, topic, consumer, partitions);
+        }catch (Exception e){
+            return Response.fail( e.getMessage() );
+        }
+        return Response.res( consumerList );
     }
 
 
     @RequestMapping( value = "/create-topic", method = RequestMethod.POST)
     @ResponseBody
-    public String createTopic(@RequestBody JSONObject requestBody) {
-        toolService.createTopic(requestBody);
-        return "success";
+    public Response createTopic(@RequestBody JSONObject requestBody) {
+        try {
+            toolService.createTopic(requestBody);
+        }catch (Exception e){
+            return Response.fail( e.getMessage() );
+        }
+        return Response.success();
     }
 
     @RequestMapping( value = "/delete-topic", method = RequestMethod.GET)
     @ResponseBody
-    public String deleteTopic(@RequestParam String zk, @RequestParam String topic) {
-        toolService.deleteTopic(zk, topic);
-        return "success";
+    public Response deleteTopic(@RequestParam String zk, @RequestParam String topic) {
+        try {
+            toolService.deleteTopic(zk, topic);
+        }catch (Exception e){
+            return Response.fail( e.getMessage() );
+        }
+        return Response.success();
     }
 
 
     @RequestMapping( value = "/producer-msg", method = RequestMethod.POST)
     @ResponseBody
-    public String producerMsg(@RequestBody JSONObject requestBody) {
-        String topic = requestBody.getString("topic");
-        String msg = requestBody.getString("msg");
-        String brokers = requestBody.getString("brokers");
-        toolService.appendMsg(brokers, topic, msg);
-        return "success";
+    public Response producerMsg(@RequestBody JSONObject requestBody) {
+        try {
+            String topic = requestBody.getString("topic");
+            String msg = requestBody.getString("msg");
+            String brokers = requestBody.getString("brokers");
+            toolService.appendMsg(brokers, topic, msg);
+        }catch (Exception e){
+            return Response.fail( e.getMessage() );
+        }
+        return Response.success();
     }
 
     @RequestMapping("/test")

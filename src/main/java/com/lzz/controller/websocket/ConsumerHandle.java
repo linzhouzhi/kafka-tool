@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +22,6 @@ public class ConsumerHandle implements WebSocketHandler {
     private Logger log = LoggerFactory.getLogger(ConsumerHandle.class);
     private Consumer consumer;
     private static final ArrayList<WebSocketSession> users = new ArrayList<WebSocketSession>();
-    ;
-
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("ConnectionEstablished");

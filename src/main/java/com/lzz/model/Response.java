@@ -4,7 +4,7 @@ package com.lzz.model;
  * Created by gl49 on 2018/1/10.
  */
 public class Response {
-    private int errorCode = 0;
+    private int code = 0;
     private String msg;
     private Object result;
 
@@ -12,13 +12,13 @@ public class Response {
         //ignore
     }
 
-    public Response(int errorCode, String msg){
-        this.errorCode = errorCode;
+    public Response(int code, String msg){
+        this.code = code;
         this.msg = msg;
     }
 
-    public Response(int errorCode, String msg, Object result){
-        this.errorCode = errorCode;
+    public Response(int code, String msg, Object result){
+        this.code = code;
         this.msg = msg;
         this.result = result;
     }
@@ -42,12 +42,12 @@ public class Response {
         return new Response(0, "success", result);
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getcode() {
+        return code;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void setcode(int code) {
+        this.code = code;
     }
 
     public String getMsg() {

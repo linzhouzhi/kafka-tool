@@ -1,34 +1,53 @@
 $(document).ready(function(){
+    var zk = getUrlParam('zk');
+    if( !zk ){
+        alarm( "please input zk address format : /client?zk=127.0.0.1:8080 " );
+        return;
+    }
+
     get("/consumer-groups?zk=" + getUrlParam('zk'), function(res){
+        if( res.code > 0 ){
+            alarm( res.msg );
+            return;
+        }
         var consumers = [];
         var hidden_consumers = [];
         var result = res.result;
-        var str = "<table class='table table-condensed'>"
+        var strGroup = "<table class='table table-condensed'>"
+        var strTopic = "<table class='table table-condensed'>"
         for(var i = 0; i < result.length; i++ ){
             try{
                 var consumer = result[i].consumer;
                 var topic = result[i].topic;
                 var partitions = result[i].partitions;
-                str += "<tr class='consumer-detail' data-detail='" + JSON.stringify(result[i]) + "'><td class='consumer-name'>" + consumer + "</td><td class='consumer-topic'>" + topic + "</td></tr>";
+                strGroup += "<tr class='consumer-detail' data-detail='" + JSON.stringify(result[i]) + "'><td>" + consumer + "</td></tr>";
+                strTopic += "<tr class='consumer-detail' data-detail='" + JSON.stringify(result[i]) + "'><td>" + topic + "</td></tr>";
             }catch(err){
 
             }
 
         }
-        str += "</table>";
-        $("#consumer-groups").html( str );
+        strGroup += "</table>";
+        strTopic += "</table>";
+        $("#consumer-groups").html( strGroup );
+        $("#consumer-topics").html( strTopic );
+
     });
 
     get("/broker-list?zk=" + getUrlParam('zk'), function(res){
-        var brokers = [];
-        var hidden_brokers = [];
-        var result = res.result;
-        for(var i = 0; i < result.length; i++ ){
-            brokers.push( result[i].host + ":" + result[i].port + "[" + result[i].jmx_port + "]" );
-            hidden_brokers.push( result[i].host + ":" + result[i].port );
+        if( res.code == 0 ){
+            var brokers = [];
+            var hidden_brokers = [];
+            var result = res.result;
+            for(var i = 0; i < result.length; i++ ){
+                brokers.push( result[i].host + ":" + result[i].port + "[" + result[i].jmx_port + "]" );
+                hidden_brokers.push( result[i].host + ":" + result[i].port );
+            }
+            $("#broker-list").data("detail", hidden_brokers.join(","));
+            $("#broker-list").text( brokers.join(" , ") );
+        }else{
+            alarm( res.msg );
         }
-        $("#broker-list").data("detail", hidden_brokers.join(","));
-        $("#broker-list").text( brokers.join(" , ") );
     });
 });
 
@@ -41,6 +60,10 @@ $(document).on("click",".consumer-detail", function(){
     detail.broker = broker;
     detail.zk = getUrlParam('zk');
     post("/consumer-detail", detail, function (res) {
+        if( res.code > 0 ){
+            alarm( res.msg );
+            return;
+        }
         var result = res.result;
         var trstr = "<table class='table table-bordered'><th>Partition</th><th>logSize</th><th>Offset</th><th>Lag</th><th>Created</th>"
         for(var i = 0; i < result.length; i++ ){

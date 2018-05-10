@@ -64,7 +64,6 @@
             <ul class="nav navbar-nav">
                 <li><a class="jsurl" href="javascript:void(0);" data-url="/client">Client</a></li>
                 <li class="active"><a class="jsurl" href="javascript:void(0);" data-url="/monitor">Monitor</a></li>
-                <li><a class="jsurl" href="javascript:void(0);" data-url="/consumer">Consumer</a></li>
             </ul>
         </div>
     </div>
@@ -81,11 +80,21 @@
         <div class="col-md-12">
             <div style="width:350px" class="pull-left">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Consumer Groups
-                    </div>
-                    <div class="panel-body" id="consumer-groups" style="max-height:700px;overflow-y:auto">
-                        。。。。
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#ConsumerGroup"  role="tab" data-toggle="tab">ConsumerGroup</a></li>
+                        <li role="presentation"><a href="#ConsumerTopic"  role="tab" data-toggle="tab">ConsumerTopic</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="ConsumerGroup">
+                            <div class="panel-body" id="consumer-groups" style="max-height:700px;overflow-y:auto">
+                                。。。。
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="ConsumerTopic">
+                            <div class="panel-body" id="consumer-topics" style="max-height:700px;overflow-y:auto">
+                                。。。。
+                            </div>
+                        </div>
                     </div>
                 </div><!-- .panel -->
             </div>
@@ -103,6 +112,21 @@
         </div><!-- .col-md-12 -->
     </div><!-- .row -->
 </div><!-- .container-fluid -->
+
+<!-- Modal -->
+<div class="modal fade" id="alert-model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="alertModalLabel">Tip</h4>
+            </div>
+            <div class="modal-body" id="alert-model-content">
+                success
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script src="../jquery/jquery-2.2.3.min.js"></script>

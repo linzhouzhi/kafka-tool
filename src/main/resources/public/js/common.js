@@ -6,7 +6,7 @@ function post(url, data, callback, errorcall) {
     $.ajax({
         type: "POST",
         url: url,
-        async: false,
+        async: true,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(data),
         dataType: "json",
@@ -26,7 +26,7 @@ function get(url, callback) {
     $.ajax({
         type: "GET",
         url: url,
-        async: false,
+        async: true,
         success: callback,
         beforeSend:function(XMLHttpRequest){
             show_loading();
@@ -42,6 +42,11 @@ function show_loading() {
         '<div class="gif"></div>' +
         '</div>';
     $(document.body).append(con);
+}
+
+function alarm(msg){
+    $("#alert-model-content").text( msg );
+    $("#alert-model").modal('show');
 }
 
 function hide_loading() {

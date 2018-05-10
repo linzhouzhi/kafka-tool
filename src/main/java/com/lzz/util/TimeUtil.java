@@ -11,4 +11,8 @@ public class TimeUtil {
         String d = format.format(time);
         return d;
     }
+
+    public static int getTime(){
+        return (int) (System.currentTimeMillis());
+    }
 }

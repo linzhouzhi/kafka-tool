@@ -1,5 +1,6 @@
 package com.lzz.util;
 
+import com.lzz.dao.CuratorZookeeperClient;
 import kafka.admin.AdminUtils;
 import kafka.api.OffsetRequest;
 import kafka.api.PartitionOffsetRequestInfo;
@@ -13,7 +14,8 @@ import org.I0Itec.zkclient.ZkClient;
 import java.util.*;
 
 public class KafkaHelper {
-
+    private static int SESSION_TIME_OUT_MS = 10 * 1000;
+    private static int CONNECTION_TIME_OUT_MS = 8 * 1000;
     /**
      * 获取kafka logSize
      * @param topic
@@ -106,41 +108,57 @@ public class KafkaHelper {
 
 
     public static void createTopic(String zk, String topic, int partition, int replication){
-        int sessionTimeoutMs = 10 * 1000;
-        int connectionTimeoutMs = 8 * 1000;
-        ZkClient zkClient = new ZkClient(
-                zk,
-                sessionTimeoutMs,
-                connectionTimeoutMs,
-                ZKStringSerializer$.MODULE$);
-        Properties topicConfig = new Properties();
-        AdminUtils.createTopic(zkClient, topic, partition, replication, topicConfig);
-        zkClient.close();
+        ZkClient zkClient = null;
+        try {
+            zkClient = new ZkClient(
+                    zk,
+                    SESSION_TIME_OUT_MS,
+                    CONNECTION_TIME_OUT_MS,
+                    ZKStringSerializer$.MODULE$);
+            Properties topicConfig = new Properties();
+            AdminUtils.createTopic(zkClient, topic, partition, replication, topicConfig);
+        }catch (Exception e){
+            throw  e;
+        }finally {
+            if( null != zkClient ){
+                zkClient.close();
+            }
+        }
     }
 
     public static void topicConfig(String zk, String topic){
-        int sessionTimeoutMs = 10 * 1000;
-        int connectionTimeoutMs = 8 * 1000;
-        ZkClient zkClient = new ZkClient(
-                zk,
-                sessionTimeoutMs,
-                connectionTimeoutMs,
-                ZKStringSerializer$.MODULE$);
-
-        kafka.api.TopicMetadata topicMetadata =  AdminUtils.fetchTopicMetadataFromZk(topic, zkClient);
-        zkClient.close();
+        ZkClient zkClient = null;
+        try {
+            zkClient = new ZkClient(
+                    zk,
+                    SESSION_TIME_OUT_MS,
+                    CONNECTION_TIME_OUT_MS,
+                    ZKStringSerializer$.MODULE$);
+            kafka.api.TopicMetadata topicMetadata =  AdminUtils.fetchTopicMetadataFromZk(topic, zkClient);
+        }catch (Exception e){
+            throw  e;
+        }finally {
+            if( null != zkClient ){
+                zkClient.close();
+            }
+        }
     }
 
     public static void deleteTopic(String zk, String topic){
-        int sessionTimeoutMs = 10 * 1000;
-        int connectionTimeoutMs = 8 * 1000;
-        ZkClient zkClient = new ZkClient(
-                zk,
-                sessionTimeoutMs,
-                connectionTimeoutMs,
-                ZKStringSerializer$.MODULE$);
-
-        AdminUtils.deleteTopic(zkClient, topic);
-        zkClient.close();
+        ZkClient zkClient = null;
+        try {
+            zkClient = new ZkClient(
+                    zk,
+                    SESSION_TIME_OUT_MS,
+                    CONNECTION_TIME_OUT_MS,
+                    ZKStringSerializer$.MODULE$);
+            AdminUtils.deleteTopic(zkClient, topic);
+        }catch (Exception e){
+            throw  e;
+        }finally {
+            if( null != zkClient ){
+                zkClient.close();
+            }
+        }
     }
 }

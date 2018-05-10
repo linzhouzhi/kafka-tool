@@ -37,7 +37,7 @@ public class ToolService {
     public static final String CONSUMERS_PATH = "/consumers";
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();
-    private BlockingQueue<String> msgQueue = new LinkedBlockingDeque<>(50);
+    private BlockingQueue<String> msgQueue = new LinkedBlockingDeque<>(5);
     public  ThreadSwitch threadSwitch = new ThreadSwitch();
 
     @Resource
@@ -137,7 +137,7 @@ public class ToolService {
         return consumerList;
     }
 
-    public List<Map<String,String>> getConsumerDetail(String zk,String broker, String topic, String consumer, int partitions) {
+    public List<Map<String,String>> getConsumerDetail(String zk,String broker, String topic, String consumer, int partitions) throws Exception {
         ZookeeperClient curatorZookeeperClient = null;
         List<Map<String,String>> resultList = new ArrayList<>();
         try {
@@ -160,11 +160,11 @@ public class ToolService {
                     result.put("lag", String.valueOf(lag));
                     resultList.add( result );
                 }catch (Exception e){
-                    e.printStackTrace();
+                    throw e;
                 }
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (Exception e1){
+            throw e1;
         }finally {
             curatorZookeeperClient.shutDown();
         }
@@ -208,7 +208,7 @@ public class ToolService {
                 String msg = msgQueue.poll(1, TimeUnit.SECONDS);
                 session.sendMessage(new TextMessage( msg ));
             }catch (Exception ignore){
-                System.out.println("timeout ignore");
+
             }
         }
         System.out.println("stop consumer ................shutdown ");
@@ -219,9 +219,14 @@ public class ToolService {
     }
 
     public void appendMsg(String brokers, String topic, String msg) {
-        kafkaProducer = new KafkaProducer(brokers, topic);
-        kafkaProducer.appendByKey(msg);
-        kafkaProducer.close();
+        try {
+            kafkaProducer = new KafkaProducer(brokers, topic);
+            kafkaProducer.appendByKey(msg);
+        }catch (Exception e){
+            throw e;
+        }finally {
+            kafkaProducer.close();
+        }
     }
 
     private Map<String,Object> getSeedsAndPort(String brokers) {

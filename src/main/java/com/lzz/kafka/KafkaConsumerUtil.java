@@ -4,6 +4,7 @@ package com.lzz.kafka;
  * Created by on 2018/1/19.
  */
 import com.lzz.model.ThreadSwitch;
+import com.lzz.util.TimeUtil;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
@@ -76,8 +77,8 @@ public class KafkaConsumerUtil {
 
         int numErrors = 0;
         long startTime = System.currentTimeMillis();
+        long readTotalCount = 0;
         while ( this.threadSwitch.isStart() ) {
-            System.out.println("---- isstart ----- : " + this.threadSwitch.isStart());
             try {
                 if (consumer == null) {
                     consumer = new SimpleConsumer(leadBroker, a_port, 100000, 1024 * 1024, clientName);
@@ -123,7 +124,11 @@ public class KafkaConsumerUtil {
                         if( msg.length() > 500 ){
                             msg = msg.substring(0, 500) + ".......";
                         }
-                        task.consumer( messageAndOffset.offset(), msg );
+                        // 一秒十条发送
+                        if( readTotalCount < 200 || (System.currentTimeMillis() - startTime)/100 > readTotalCount ){
+                            task.consumer( messageAndOffset.offset(), msg );
+                            readTotalCount++;
+                        }
                         numRead++;
                     }catch (Exception ignore){
 
